@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - José Martinho</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="topbar-container">
+        <div class="navigation-container">
+          <a href="index.html">
+            <i class="fas fa-home" style="color: white; font-size: 30px"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="form-wrapper">
+      <div class="form-container">
+        <h1>LOGIN</h1>
+        <form onsubmit="event.preventDefault(); login();">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required /><br />
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required /><br />
+          <input type="submit" value="Submit"/>
+        </form>
+        <p id="loginResult"></p>
+      </div>
+    </div>
+
+    <script>
+        function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+      
+        // Replace with your login endpoint URL
+        const url = 'http://localhost:4242/api/user/login';
+      
+        const requestBody = { username, password };
+      
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('Invalid username or password');
+            }
+          })
+         
+          .then((data) => {localStorage.setItem('user', JSON.stringify(data.user));
+      
+            // Handle login response
+            document.getElementById('loginResult').innerHTML = JSON.stringify(data);
+      
+            // Redirect to index page if username and password are correct
+            window.location.href = '/website/index.html';
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      }
+    </script>
+  </body>
+</html>

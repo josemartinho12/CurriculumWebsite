@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    />
+
+    <title>José Martinho</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="topbar-container">
+        <div class="navigation-container">
+          <a href="login.html">
+            <i
+              class="left-menu-icon fas fa-pencil-alt"
+              style="font-size: 30px"
+            ></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-content">
+      <div>
+        <h1 class="cover-title">José Martinho</h1>
+        <p class="cover-desc">
+          Após concluir o ensino secundário decidi que o meu futuro passaria
+          essencialmente pela área das telecomunicações, e desde então estou
+          sempre empenhado em enriquecer os meus conhecimentos nesse domínio.
+          Atualmente, o meu maior interesse reside especificamente na área da
+          cibersegurança, e é nesse campo que desejo prosseguir os meus estudos.
+          Estou à procura de oportunidades que me permitam expandir os meus
+          conhecimentos nestas áreas e contribuir com soluções inovadoras e
+          eficazes. Estou também motivado para enfrentar novos desafios e
+          desenvolver-me profissionalmente nestes setores.
+        </p>
+        <br />
+      </div>
+
+      <div>
+        <img
+          class="profile-picture"
+          src="images/profilePic.png"
+          alt="profile picture"
+        />
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="left-column">
+        <div class="left-content">
+          <div class="section">
+            <h2 class="section-title">SOFT SKILLS</h2>
+            <p>Colaboração</p>
+            <p>Organização</p>
+            <p>Pensamento Criativo</p>
+          </div>
+          <br />
+          <div class="section">
+            <h2 class="section-title">HARD SKILLS</h2>
+            <p>Administração de Sistemas</p>
+            <p>Redes de Comunicação</p>
+            <p>Segurança nas Redes</p>
+            <p>Programação</p>
+          </div>
+          <br />
+          <div class="section">
+            <h2 class="section-title">IDIOMAS</h2>
+            <div class="language-progress">
+              <p>Inglês</p>
+              <div class="progress-bar">
+                <div class="progress-bar-fill" style="width: 65%"></div>
+              </div>
+            </div>
+            <div class="language-progress">
+              <p>Português</p>
+              <div class="progress-bar">
+                <div class="progress-bar-fill" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="section">
+            <h2 class="section-title">CONTACTO</h2>
+            <p><i class="fas fa-phone"></i> (+351) 963899131</p>
+            <p><i class="fas fa-envelope"></i> josemartinho@ipvc.pt</p>
+            <p><i class="fas fa-map-marker-alt"></i> Braga, Portugal</p>
+            <br />
+            <a href="https://www.instagram.com/zemartinho12/"
+              ><i class="left-menu-icon fab fa-instagram"></i
+            ></a>
+            <a href="https://github.com/josemartinho12"
+              ><i class="left-menu-icon fab fa-github"></i
+            ></a>
+            <a href="https://www.linkedin.com/in/josemartinho12/"
+              ><i class="left-menu-icon fab fa-linkedin"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+      <div class="right-column">
+        <div class="right-content">
+          <h2 class="section-title">FORMAÇÃO ACADÉMICA</h2>
+          <input type="hidden" id="id">
+          <div id="educationSection"></div>
+            <button id="openModalButton">Adicionar Formação Académica</button>
+            <div id="addEducationModal" style="display: none;">
+                <form id="addEducationForm">
+                    <label for="level">Nível:</label>
+                    <input type="text" id="level" name="level" required>
+                    <label for="degree">Curso:</label>
+                    <input type="text" id="degree" name="degree" required>
+                    <label for="institution">Instituição:</label>
+                    <input type="text" id="institution" name="institution" required>
+                    <label for="year">Ano:</label>
+                    <input type="text" id="year" name="year" required>
+                    <input type="submit" value="Adicionar">
+                </form>
+            </div>
+            
+          </div>
+          <br />
+          <div class="interestSection">
+            <h2 class="section-title">ÁREAS DE INTERESSE</h2>
+            <div class="">
+              <div class="info-containers">
+                <h3>REDES E SERVIÇOS DE COMUNICAÇÃO E MULTIMÉDIA</h3>
+                <p>
+                  Este interesse surge ainda antes do ingresso no Ensino
+                  Superior, quando o meu principal objetivo era estudar a área
+                  de Telecomunicações.
+                </p>
+              </div>
+              <br />
+              <div class="info-containers">
+                <h3>CIBERSEGURANÇA</h3>
+                <p>
+                  Após ingressar em Engenharia de Redes e Sistemas de
+                  Computadores comecei a despertar uma enorme curiosidade nesta
+                  ciência, é desde aí que tenho concentrado os meus esforços em
+                  progredir nesta área.
+                </p>
+              </div>
+              <br />
+              <div class="info-containers">
+                <h3>INTERNET OF THINGS</h3>
+                <p>
+                  Também motivado pelo meu percurso académico, tenho vindo a
+                  desenvolver um especial interesse neste tema, mais
+                  concretamente em questões de segurança de dispositivos IoT.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p>José Martinho &copy; 2023</p>
+    </footer>
+    <script src="main.js"></script>  
+  </body>
+</html>
