@@ -233,5 +233,27 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-  background-color: darkorange;
+  background-color: orangered;
+}
+
+button {
+  border-color: orangered;
+  border-radius: 5px;
+  background-color: #000000;
+  color: white;
+}
+
+.close-modal-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: orangered;
+  font-size: 20px;
+}
+
+.close-modal-button:hover {
+  color: #333;
 }

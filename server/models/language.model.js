@@ -11,10 +11,6 @@ const LanguageModel = database.define('language', {
     type: STRING,
     allowNull: false,
   },
-  proficiency: {
-    type: INTEGER,
-    allowNull: false,
-  },
 });
 
 export { LanguageModel };

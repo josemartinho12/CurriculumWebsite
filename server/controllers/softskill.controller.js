@@ -15,3 +15,15 @@ export const getSoftSkills = async (req, res) => {
 
   return res.json(softSkills);
 };
+
+export const deleteSoftSkill = async (req, res) => {
+  const { id } = req.params;  
+
+  const result = await SoftSkillModel.destroy({
+    where: {
+      id: id
+    }
+  });
+
+  return res.json(result);
+};

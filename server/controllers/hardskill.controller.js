@@ -15,3 +15,13 @@ export const getHardSkills = async (req, res) => {
 
   return res.json(hardSkills);
 };
+
+export const deleteHardSkill = async (req, res) => {
+  const { id } = req.params;
+
+  const result = await HardSkillModel.destroy({
+    where: { id }
+  });
+
+  return res.json(result);
+};
