@@ -67,13 +67,18 @@
       
             // Handle login response
             document.getElementById('loginResult').innerHTML = JSON.stringify(data);
-      
+            localStorage.setItem('jwtToken', data.token);
             // Redirect to index page if username and password are correct
             window.location.href = '/website/index.html';
           })
           .catch((error) => {
             console.error('Error:', error);
           });
+
+          updateEducationSection();
+          updateInterestSection();
+          updateSoftSkillSection();
+          updateHardSkillSection();
       }
     </script>
   </body>

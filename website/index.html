@@ -20,15 +20,16 @@
     <div class="topbar">
       <div class="topbar-container">
         <div class="navigation-container">
-          <a href="login.html">
-            <i
-              class="left-menu-icon fas fa-pencil-alt"
-              style="font-size: 30px"
-            ></i>
+          <a class="topbar-icon" id="logoutButton" style="display:none;">
+            <i class="left-menu-icon fas fa-sign-out-alt" style="font-size: 30px"></i>
+          </a>
+          <a class="topbar-icon" id="loginIcon" href="login.html">
+            <i class="left-menu-icon fas fa-pencil-alt" style="font-size: 30px"></i>
           </a>
         </div>
       </div>
     </div>
+    
 
     <div class="cover-content">
       <div>
@@ -55,14 +56,25 @@
         />
       </div>
     </div>
-
     <div class="content">
       <div class="left-column">
         <div class="left-content">
+          <h2 class="section-title">CONTACTO</h2>
+          <div id="contactInfo" class="contactInfo">
+            <p><i class="fas fa-phone"></i> (+351) 963899131</p>
+            <p><i class="fas fa-envelope"></i> josemartinho@ipvc.pt</p>
+            <p><i class="fas fa-map-marker-alt"></i> Braga, Portugal</p>
+            <br />
+            <a href="https://www.instagram.com/zemartinho12/"><i class="left-menu-icon fab fa-instagram"></i></a>
+            <a href="https://github.com/josemartinho12"><i class="left-menu-icon fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/josemartinho12/"><i class="left-menu-icon fab fa-linkedin"></i></a>
+        </div>
+        <br>
           <h2 class="section-title">SOFT SKILLS</h2>
           <button id="openSoftSkillModalButton">Adicionar Soft Skill</button>
           <div class= "softSkillSection" id="softSkillSection"></div>
             <div id="addSoftSkillModal" style="display: none;">
+            <span class="close-modal" id="closeSoftSkillModal">&times;</span>
             <form id="addSoftSkillForm">
               <label for="softSkillName">Nome:</label>
               <input type="text" id="softSkillName" name="softSkillName" required>
@@ -70,11 +82,11 @@
             </form>
           </div>
           <br />
-          <div class="section">
             <h2 class="section-title">HARD SKILLS</h2>
             <button id="openHardSkillModalButton">Adicionar Hard Skill</button>
           <div class= "hardSkillSection" id="hardSkillSection"></div>
             <div id="addHardSkillModal" style="display: none;">
+              <span class="close-modal" id="closeHardSkillModal">&times;</span>
               <form id="addHardSkillForm">
                   <label for="hardSkillName">Nome:</label>
                   <input type="text" id="hardSkillName" name="hardSkillName">
@@ -82,38 +94,7 @@
                   <input type="submit" value="Adicionar">
               </form>
           </div>
-          </div>
           <br />
-          <div class="section">
-            <h2 class="section-title">IDIOMAS</h2>
-            <button id="openLanguageModalButton">Adicionar Idioma</button>
-            <div id="languageContainer"></div>
-            <div id="addLanguageModal" style="display: none;">
-              <form id="addLanguageForm">
-                  <label for="languageName">Nome:</label>
-                  <input type="text" id="languageName" name="languageName">
-                  <input type="hidden" id="id">
-                  <input type="submit" value="Adicionar">
-              </form>
-            </div>
-          </div>
-          <br />
-          <div class="section">
-            <h2 class="section-title">CONTACTO</h2>
-            <p><i class="fas fa-phone"></i> (+351) 963899131</p>
-            <p><i class="fas fa-envelope"></i> josemartinho@ipvc.pt</p>
-            <p><i class="fas fa-map-marker-alt"></i> Braga, Portugal</p>
-            <br />
-            <a href="https://www.instagram.com/zemartinho12/"
-              ><i class="left-menu-icon fab fa-instagram"></i
-            ></a>
-            <a href="https://github.com/josemartinho12"
-              ><i class="left-menu-icon fab fa-github"></i
-            ></a>
-            <a href="https://www.linkedin.com/in/josemartinho12/"
-              ><i class="left-menu-icon fab fa-linkedin"></i
-            ></a>
-          </div>
         </div>
       </div>
       <div class="right-column">
@@ -122,6 +103,7 @@
           <button id="openModalButton">Adicionar Formação Académica</button>
           <div id="educationSection"></div>
             <div id="addEducationModal" style="display: none;">
+              <span class="close-modal" id="closeEducationModal">&times;</span>
                 <form id="addEducationForm">
                     <input type="hidden" id="id" name="id">
                     <label for="level">Nível:</label>
@@ -134,13 +116,13 @@
                     <input type="text" id="year" name="year" required>
                     <input type="submit" value="Adicionar">
                 </form>
-            </div>
-            
+              </div>
             
             <h2 class="section-title">ÁREAS DE INTERESSE</h2>
             <button id="openInterestModalButton">Adicionar Área de Interesse</button>
             <div id="interestSection"></div>
             <div id="addInterestModal" style="display: none;">
+              <span class="close-modal" id="closeInterestModal">&times;</span>
                 <form id="addInterestForm">
                     <label for="interestTitle">Título:</label>
                     <input type="text" id="interestTitle" name="interestTitle" required>
@@ -157,5 +139,25 @@
       <p>José Martinho &copy; 2023</p>
     </footer>
     <script src="main.js"></script>  
+  
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+          const jwtToken = localStorage.getItem('jwtToken');
+          const addButtons = document.querySelectorAll('button[id$="ModalButton"]'); 
+          const loginIcon = document.getElementById('loginIcon');
+          const logoutButton = document.getElementById('logoutButton');
+
+          if (!jwtToken) { 
+              addButtons.forEach(button => button.style.display = 'none');
+              logoutButton.style.display = 'none';
+              loginIcon.style.display = 'block';
+          } else { 
+              loginIcon.style.display = 'none';
+              logoutButton.style.display = 'block';
+              addButtons.forEach(button => button.style.display = 'block');
+          }
+        });
+
+    </script>
   </body>
 </html>

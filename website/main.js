@@ -1,37 +1,53 @@
-function updateEducationSection() {
+const jwtToken = localStorage.getItem('jwtToken');
+
+// Mostrar o botão de logout se o utilizador estiver com sessão iniciada
+if (jwtToken) {
+    document.getElementById('logoutButton').style.display = 'block';
+}
     
+// Adicionar evento de click ao botão de logout
+document.getElementById('logoutButton').addEventListener('click', () => {
+    // Remover o token JWT do local storage
+    localStorage.removeItem('jwtToken');
+    // Atualizar a página
+    location.reload();
+});
+
+// Função para atualizar a secção de educação na página
+function updateEducationSection() {
+    // Obter o token JWT do armazenamento local
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    // Fazer uma solicitação para o servidor para obter os dados de educação
     fetch('http://localhost:4242/api/education/get')
     .then(response => response.json())
     .then(data => {
-        // Limpando a seção de educação antes de adicionar novos itens
+        // Limpar a secção de educação antes de adicionar novos itens
         educationSection.innerHTML = '';
-        // Criação de novos elementos HTML para cada item de educação
+
+        // Para cada item de educação nos dados recebidos do servidor
         data.forEach(educationItem => {
-            // Criar a div "info-containers"
+            // Criação de uma nova div para o item de educação
             const infoContainer = document.createElement('div');
             infoContainer.classList.add('info-containers');
-    
-            // Criar o elemento h3
+
+            // Criação dos elementos do item de educação
             const levelElement = document.createElement('h3');
             levelElement.textContent = educationItem.level;
-            
-            // Criar os elementos p
             const degreeElement = document.createElement('p');
             degreeElement.textContent = educationItem.degree;
-            
             const institutionElement = document.createElement('p');
             institutionElement.textContent = `${educationItem.institution} | ${educationItem.year}`;
 
-
-            // Adicionar h3 e p's ao "info-containers"
+            // Adicionar os elementos à div do item de educação
             infoContainer.appendChild(levelElement);
             infoContainer.appendChild(degreeElement);
             infoContainer.appendChild(institutionElement);
-    
-            
-            // Criar botões "Editar" e "Remover"
+
+            // Criação dos botões "Editar" e "Remover" para cada item de educação
             const editButton = document.createElement('button');
             editButton.textContent = 'Editar';
+            // Quando o botão "Editar" for clicado, o modal de edição é preenchido com os dados do item e mostrado
             editButton.addEventListener('click', () => {
             document.getElementById('level').value = educationItem.level;
             document.getElementById('degree').value = educationItem.degree;
@@ -40,54 +56,73 @@ function updateEducationSection() {
             document.getElementById('id').value = educationItem.id;
             document.getElementById('addEducationModal').style.display = 'block';
           });
-    
+
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Remover';
+            // Quando o botão "Remover" for clicado, é enviada uma solicitação para o servidor para remover o item de educação
             deleteButton.addEventListener('click', () => {
                 fetch(`http://localhost:4242/api/education/delete/${educationItem.id}`, {
                     method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
                 })
                 .then(response => response.json())
                 .then(() => {
-                    // Remover o item de educação do DOM
+                    // O item de educação é removido da página
                     educationSection.removeChild(infoContainer);
                 });
             });
-    
+
+            // Se o utilizador não estiver autenticado, os botões "Editar" e "Remover" são ocultados
+            if (!jwtToken) {
+                editButton.style.display = 'none';
+                deleteButton.style.display = 'none';
+            }
+
+            // Adicionar os botões à div do item de educação
             infoContainer.appendChild(editButton);
             infoContainer.appendChild(deleteButton);
-        
-            // Adicionar "info-containers" à seção de educação
+
+            // Adicionar a div do item de educação à secção de educação
             educationSection.appendChild(infoContainer);
-            
         });
     })
     .catch(error => console.error('Error:', error));
 }
 
+// Atualizar a secção de educação quando a página é carregada
 updateEducationSection();
 
-// Abrir o modal quando o botão for clicado
+// Quando o botão para fechar o modal de educação for clicado, o modal é ocultado
+document.getElementById('closeEducationModal').addEventListener('click', () => {
+    document.getElementById('addEducationModal').style.display = 'none';
+});
+
+// Quando o botão para abrir o modal de educação for clicado, o modal é mostrado
 document.getElementById('openModalButton').addEventListener('click', () => {
     document.getElementById('addEducationModal').style.display = 'block';
 });
 
-// Lidar com o envio do formulário
+// Quando o formulário no modal de educação é enviado
 document.getElementById('addEducationForm').addEventListener('submit', event => {
+    // O comportamento padrão do evento de envio é impedido para que a página não seja recarregada
     event.preventDefault();
 
+    // Os valores dos campos do formulário são obtidos
     const id = document.getElementById('id').value;
     const level = document.getElementById('level').value;
     const degree = document.getElementById('degree').value;
     const institution = document.getElementById('institution').value;
     const year = document.getElementById('year').value;
 
+    // Se um ID está definido, um item de educação existente será editado
     if (id) {
-        // Se o ID estiver definido, estamos editando um item existente
         fetch('http://localhost:4242/api/education/update', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
             },
             body: JSON.stringify({
                 id,
@@ -99,20 +134,21 @@ document.getElementById('addEducationForm').addEventListener('submit', event => 
         })
         .then(response => response.json())
         .then(() => {
-            // Atualizar a página para refletir as alterações
+            // A secção de educação é atualizada para mostrar as alterações feitas
             updateEducationSection();
 
-             // Fechar o modal e limpar o formulário
-             document.getElementById('addEducationModal').style.display = 'none';
-             document.getElementById('addEducationForm').reset();
-             document.getElementById('id').value = '';
+            // O modal é fechado e o formulário é limpo
+            document.getElementById('addEducationModal').style.display = 'none';
+            document.getElementById('addEducationForm').reset();
+            document.getElementById('id').value = '';
         });
     } else {
-        // Se o ID não estiver definido, estamos adicionando um novo item
+        // Se um ID não está definido, um novo item de educação vai ser adicionado
         fetch('http://localhost:4242/api/education/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
             },
             body: JSON.stringify({
                 level,
@@ -123,38 +159,32 @@ document.getElementById('addEducationForm').addEventListener('submit', event => 
         })
         .then(response => response.json())
         .then(() => {
-            // Atualizar a página para mostrar o novo item
+            // A secção de educação é atualizada para mostrar o novo item adicionado
             updateEducationSection();
 
-            // Fechar o modal e limpar o formulário
+            // O modal é fechado e o formulário é limpo
             document.getElementById('addEducationModal').style.display = 'none';
             document.getElementById('addEducationForm').reset();
             document.getElementById('id').value = '';
         });
     }
-
+    
+    // Quando o botão para fechar o modal de adicionar educação for clicado, o modal é ocultado
     document.getElementById('closeAddEducationModal').addEventListener('click', () => {
         document.getElementById('addEducationModal').style.display = 'none';
       });
-      
 });
 
-
   
-  // Obter a seção de interesse do DOM
-const interestSection = document.querySelector('.interestSection');
-
-// Atualizar a seção de interesse
 function updateInterestSection() {
-    // Fazer uma requisição GET para buscar todas as áreas de interesse
+    const jwtToken = localStorage.getItem('jwtToken');
+
     fetch('http://localhost:4242/api/interest/get')
         .then(response => response.json())
         .then(data => {
-            // Limpar a seção de interesse
             const interestSection = document.getElementById('interestSection');
             interestSection.innerHTML = '';
 
-            // Adicionar cada área de interesse à seção
             data.forEach(interest => {
                 const div = document.createElement('div');
                 div.className = 'info-containers';
@@ -167,7 +197,6 @@ function updateInterestSection() {
                 p.textContent = interest.description;
                 div.appendChild(p);
 
-                // Criar botões "Editar" e "Remover"
                 const editButton = document.createElement('button');
                 editButton.textContent = 'Editar';
                 editButton.addEventListener('click', () => {
@@ -176,22 +205,26 @@ function updateInterestSection() {
                     document.getElementById('id').value = interest.id;
                     document.getElementById('addInterestModal').style.display = 'block';
                 });
-                 // Adicionar uma quebra de linha
-                const br = document.createElement('br');
-                educationSection.appendChild(br);
-
+                
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Remover';
                 deleteButton.addEventListener('click', () => {
-                    fetch(`http://localhost:4242/api/interest/delete/${interest.id}`, {
+                    fetch(`http://localhost:4242/api/interest/delete/${interest.id}`, { 
                         method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${jwtToken}`
+                        }
                     })
                     .then(response => response.json())
                     .then(() => {
-                        // Remover o item de interesse do DOM
-                        interestSection.removeChild(div);
+                        interestSection.removeChild(div); 
                     });
                 });
+                
+                if (!jwtToken) {
+                    editButton.style.display = 'none';
+                    deleteButton.style.display = 'none';
+                }
 
                 div.appendChild(editButton);
                 div.appendChild(deleteButton);
@@ -205,7 +238,10 @@ function updateInterestSection() {
 
 updateInterestSection();
 
-// Lidar com o envio do formulário de interesse
+document.getElementById('closeInterestModal').addEventListener('click', () => {
+    document.getElementById('addInterestModal').style.display = 'none';
+});
+
 document.getElementById('addInterestForm').addEventListener('submit', event => {
     event.preventDefault();
 
@@ -214,11 +250,12 @@ document.getElementById('addInterestForm').addEventListener('submit', event => {
     const description = document.getElementById('interestDescription').value;
 
     if (id) {
-        // Se o ID estiver definido, estamos editando um item existente
         fetch('http://localhost:4242/api/interest/update', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+
             },
             body: JSON.stringify({
                 id,
@@ -228,15 +265,15 @@ document.getElementById('addInterestForm').addEventListener('submit', event => {
         })
         .then(response => response.json())
         .then(() => {
-            // Atualizar a seção de interesse
             updateInterestSection();
         });
     } else {
-        // Se o ID não estiver definido, estamos adicionando um novo item
         fetch('http://localhost:4242/api/interest/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+
             },
             body: JSON.stringify({
                 title,
@@ -245,35 +282,28 @@ document.getElementById('addInterestForm').addEventListener('submit', event => {
         })
         .then(response => response.json())
         .then(() => {
-            // Atualizar a seção de interesse
             updateInterestSection();
         });
     }
 
-    // Fechar o modal e limpar o formulário
     document.getElementById('addInterestModal').style.display = 'none';
     document.getElementById('addInterestForm').reset();
     document.getElementById('id').value = '';
 });
 
-// Abrir o modal quando o botão for clicado
 document.getElementById('openInterestModalButton').addEventListener('click', () => {
     document.getElementById('addInterestModal').style.display = 'block';
 });
 
-// Obter a seção de soft skills do DOM
-const softSkillSection = document.querySelector('.softSkillSection');
 
-// Atualizar a seção de soft skills
 function updateSoftSkillSection() {
-    // Fazer uma requisição GET para buscar todas as soft skills
+    const jwtToken = localStorage.getItem('jwtToken');
+
     fetch('http://localhost:4242/api/softskill/get')
         .then(response => response.json())
         .then(data => {
-            // Limpar a seção de soft skills
             softSkillSection.innerHTML = '';
 
-            // Adicionar cada soft skill à seção
             data.forEach(softSkill => {
                 const div = document.createElement('div');
                 div.className = 'info-containers';
@@ -287,13 +317,19 @@ function updateSoftSkillSection() {
                 deleteButton.addEventListener('click', () => {
                     fetch(`http://localhost:4242/api/softskill/delete/${softSkill.id}`, {
                         method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${jwtToken}`
+                        }
                     })
                     .then(response => response.json())
                     .then(() => {
-                        // Remover a soft skill do DOM
                         softSkillSection.removeChild(div);
                     });
                 });
+
+                if (!jwtToken) {
+                    deleteButton.style.display = 'none';
+                }
 
                 div.appendChild(deleteButton);
 
@@ -302,22 +338,26 @@ function updateSoftSkillSection() {
         });
 }
 
-
 updateSoftSkillSection();
 
-// Lidar com o envio do formulário de soft skills
+document.getElementById('closeSoftSkillModal').addEventListener('click', () => {
+    document.getElementById('addSoftSkillModal').style.display = 'none';
+});
+
 document.getElementById('addSoftSkillForm').addEventListener('submit', event => {
     event.preventDefault();
+
+    const jwtToken = localStorage.getItem('jwtToken');
 
     const id = document.getElementById('id').value;
     const name = document.getElementById('softSkillName').value;
 
     if (id) {
-        // Se o ID estiver definido, estamos editando um item existente
         fetch('http://localhost:4242/api/softskill/update', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
             },
             body: JSON.stringify({
                 id,
@@ -326,15 +366,14 @@ document.getElementById('addSoftSkillForm').addEventListener('submit', event => 
         })
         .then(response => response.json())
         .then(() => {
-            // Atualizar a seção de soft skills
             updateSoftSkillSection();
         });
     } else {
-        // Se o ID não estiver definido, estamos adicionando um novo item
         fetch('http://localhost:4242/api/softskill/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
             },
             body: JSON.stringify({
                 name
@@ -342,35 +381,26 @@ document.getElementById('addSoftSkillForm').addEventListener('submit', event => 
         })
         .then(response => response.json())
         .then(() => {
-            // Atualizar a seção de soft skills
             updateSoftSkillSection();
         });
     }
 
-    // Fechar o modal e limpar o formulário
     document.getElementById('addSoftSkillModal').style.display = 'none';
     document.getElementById('addSoftSkillForm').reset();
     document.getElementById('id').value = '';
 });
 
-// Abrir o modal quando o botão for clicado
 document.getElementById('openSoftSkillModalButton').addEventListener('click', () => {
     document.getElementById('addSoftSkillModal').style.display = 'block';
 });
 
-// Obter a seção de hard skills do DOM
-const hardSkillSection = document.querySelector('.hardSkillSection');
-
 function updateHardSkillSection() {
-    console.log('funçao chamada')
-    // Fazer uma requisição GET para buscar todas as hard skills
+    const jwtToken = localStorage.getItem('jwtToken');
     fetch('http://localhost:4242/api/hardskill/get')
         .then(response => response.json())
         .then(data => {
-            // Limpar a seção de hard skills
             hardSkillSection.innerHTML = '';
 
-            // Adicionar cada hard skill à seção
             data.forEach(hardSkill => {
                 const div = document.createElement('div');
                 div.className = 'info-containers';
@@ -384,13 +414,19 @@ function updateHardSkillSection() {
                 deleteButton.addEventListener('click', () => {
                     fetch(`http://localhost:4242/api/hardskill/delete/${hardSkill.id}`, {
                         method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${jwtToken}`
+                        }
                     })
                     .then(response => response.json())
                     .then(() => {
-                        // Remover a hard skill do DOM
                         hardSkillSection.removeChild(div);
                     });
                 });
+
+                if (!jwtToken) {
+                    deleteButton.style.display = 'none';
+                }
 
                 div.appendChild(deleteButton);
 
@@ -401,17 +437,22 @@ function updateHardSkillSection() {
 
 updateHardSkillSection();
 
-// Lidar com o envio do formulário de hard skill
+document.getElementById('closeHardSkillModal').addEventListener('click', () => {
+    document.getElementById('addHardSkillModal').style.display = 'none';
+});
+
 document.getElementById('addHardSkillForm').addEventListener('submit', event => {
     event.preventDefault();
 
+    const jwtToken = localStorage.getItem('jwtToken');
+
     const name = document.getElementById('hardSkillName').value;
 
-    // Estamos adicionando uma nova hard skill
     fetch('http://localhost:4242/api/hardskill/create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwtToken}`
         },
         body: JSON.stringify({
             name,
@@ -419,20 +460,17 @@ document.getElementById('addHardSkillForm').addEventListener('submit', event => 
     })
     .then(response => response.json())
     .then(() => {
-        // Atualizar a seção de hard skills
         updateHardSkillSection();
     });
 
-    // Limpar o formulário
     document.getElementById('addHardSkillForm').reset();
+    document.getElementById('addHardSkillModal').style.display = 'none';
 });
 
-// Abrir o modal de adição de hard skill
 document.getElementById('openHardSkillModalButton').addEventListener('click', () => {
     document.getElementById('addHardSkillModal').style.display = 'block';
 });
 
-// Fechar o modal de adição de hard skill
 document.getElementById('closeAddHardSkillModal').addEventListener('click', () => {
     document.getElementById('addHardSkillModal').style.display = 'none';
 });
